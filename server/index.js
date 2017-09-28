@@ -53,7 +53,7 @@ app.use('/graphql', graphQLHTTP({
 }));
 
 app.get('/', (req, res) => {
-  res.send('Welcome!!!');
+  res.send('Welcome!!! use /graphql to visit graphiql :D');
 });
 
 app.listen(4000, () => {
