@@ -42,6 +42,14 @@ const rootData = {
   students: fakeData.students,
   failingStudents: fakeData.students.filter(student => student.score < 80),
   passingStudents: fakeData.students.filter(student => student.score >= 80),
+  createStudent: ({ input }) => {
+    const newId = Math.max(...fakeData.students.map(student => student.id)) + 1;
+    const newStudent = {
+      id: newId,
+      name: input.name,
+      
+    }
+  }
 };
 
 // now we need the express app to use graphQLHTTP to serve graphql on '/graphql' route
