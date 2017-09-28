@@ -25,6 +25,7 @@ const appSchema = buildSchema(`
     id: ID!
     name: String!
     age: Int!
+    score: Int!
     parentName: String
   }
 
@@ -47,7 +48,7 @@ const rootData = {
     const newStudent = {
       id: newId,
       name: input.name,
-      
+
     }
   }
 };
