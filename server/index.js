@@ -6,32 +6,37 @@ const { buildSchema } = require('graphql');
 
 const fakeData = require('./fakeData');
 
-// cors and bodyParser, as usual
+// cors and bodyParser, as usual, for later use
 app.use(cors());
 app.use(bodyParser.json());
 
+// let's build the app's schema using buildSchema()
+// ugh, no syntax highlighting for backticks? Bear with it for now!
+// this is the easiest way for us to build a simple GraphQL schema.
+
+// understanding GraphQL type system: http://graphql.org/learn/schema/#type-system
 const appSchema = buildSchema(`
   type School {
-    id: ID!,
-    name: String!,
-    accreditation: String!,
+    name: String!
+    accreditation: String!
   }
 
   type Student {
-    id: ID!,
-    name: String!,
-    age: Int!,
-    parentName: String,
+    id: ID!
+    name: String!
+    age: Int!
+    parentName: String
   }
 
   type Query {
-    school: School,
-    students: [Student],
-    failingStudents: [Student],
-    passingStudents: [Student],
+    school: School
+    students: [Student]
+    failingStudents: [Student]
+    passingStudents: [Student]
   }
 `);
 
+// let's define a root data, which is an object where data resolves
 const rootData = {
   school: fakeData.school,
   students: fakeData.students,
@@ -39,6 +44,8 @@ const rootData = {
   passingStudents: fakeData.students.filter(student => student.score >= 80),
 };
 
+// now we need the express app to use graphQLHTTP to serve graphql on '/graphql' route
+// of course, we can change the route to '/api' or any names
 app.use('/graphql', graphQLHTTP({
   schema: appSchema,
   rootValue: rootData,
