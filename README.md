@@ -32,15 +32,21 @@ sample mutation query
 mutation CreateStudent($newStudent: NewStudentInput!) {
   createStudent(input: $newStudent) {
     name
+    age
+    score
   }
 }
 ```
 
 query variables for mutation
+
 ```
-mutation CreateStudent($newStudent: NewStudent!) {
-  createStudent(input: $newStudent) {
-    name
+{
+  "newStudent": {
+    "name": "wawan",
+    "age": 18,
+    "score": 20,
+    "parentName": "dodo"
   }
 }
 ```
