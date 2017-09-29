@@ -25,12 +25,12 @@ query {
 }
 ```
 
-- [02-Simple GraphQL Query and Mutation](https://github.com/adhywiranata/ngopract-graphl-ft-express/tree/01-simple-graphql-mutation), simple getting started with query and mutation
+- [02-Simple GraphQL Query and Mutation](https://github.com/adhywiranata/ngopract-graphl-ft-express/tree/02-simple-graphql-mutation), simple getting started with query and mutation
 
 sample mutation query
 ```
 mutation CreateStudent($newStudent: NewStudentInput!) {
-  createStudent(input: $newStudent) {
+  createStudent(data: $newStudent) {
     name
     age
     score
