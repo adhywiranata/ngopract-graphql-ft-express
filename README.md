@@ -30,7 +30,7 @@ query {
 sample mutation query
 ```
 mutation CreateStudent($newStudent: NewStudentInput!) {
-  createStudent(data: $newStudent) {
+  createStudent(input: $newStudent) {
     name
     age
     score
