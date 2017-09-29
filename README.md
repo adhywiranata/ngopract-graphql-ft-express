@@ -50,3 +50,5 @@ query variables for mutation
   }
 }
 ```
+
+- [03- GraphQL Query](https://github.com/adhywiranata/ngopract-graphl-ft-express/tree/03-graphql-query), sampe as 01, but without using buildSchema method and use GraphQLObject instead.
