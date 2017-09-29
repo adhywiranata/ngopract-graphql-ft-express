@@ -9,6 +9,7 @@ const {
   GraphQLString,
   GraphQLList,
   GraphQLObjectType,
+  GraphQLInputObjectType,
   GraphQLSchema,
 } = require('graphql');
 
@@ -45,15 +46,18 @@ const StudentType = new GraphQLObjectType({
     age: {
       type: new GraphQLNonNull(GraphQLInt),
     },
+    parentName: {
+      type: GraphQLString,
+    },
     score: {
-      type: GraphQLInt,
+      type: new GraphQLNonNull(GraphQLInt),
     },
   },
 });
 
 // now let's create an appQuery to contain all fields, school and students
 // each field resolves to a value from the fakeData
-const appQuery = new GraphQLObjectType({
+const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
     school: {
@@ -67,8 +71,56 @@ const appQuery = new GraphQLObjectType({
   },
 });
 
+// to add a new student, we need to add a newStudent input type
+const StudentInputType = new GraphQLInputObjectType({
+  name: 'StudentInputType',
+  fields: {
+    name: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    age: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    parentName: {
+      type: GraphQLString,
+    },
+    score: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+  }
+});
+
+// then, we need the mutation
+const MutationType = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    createStudent: {
+      type: StudentType,
+      args: {
+        input: {
+          name: 'input',
+          type: StudentInputType,
+        }
+      },
+      resolve: (obj, args) => {
+        const { input } = args;
+        const newId = Math.max(...fakeData.students.map(student => student.id)) + 1;
+        const newStudent = {
+          id: newId,
+          name: input.name,
+          age: input.age,
+          score: 0,
+        };
+        fakeData.students.push(newStudent);
+        return newStudent;
+      }
+    }
+  }
+})
+
 const appSchema = new GraphQLSchema({
-  query: appQuery,
+  query: QueryType,
+  mutation: MutationType,
 });
 
 app.use('/graphql', graphQLHTTP({
