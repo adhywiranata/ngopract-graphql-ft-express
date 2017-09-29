@@ -109,7 +109,8 @@ const MutationType = new GraphQLObjectType({
           id: newId,
           name: input.name,
           age: input.age,
-          score: 0,
+          parentName: input.parentName,
+          score: input.score,
         };
         fakeData.students.push(newStudent);
         return newStudent;
