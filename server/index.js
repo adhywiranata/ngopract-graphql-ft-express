@@ -35,6 +35,17 @@ const appSchema = buildSchema(`
     failingStudents: [Student]
     passingStudents: [Student]
   }
+
+  input NewStudentInput {
+    name: String!
+    age: Int!
+    score: Int!
+    parentName: String
+  }
+  
+  type Mutation {
+    createStudent(input: NewStudentInput): Student
+  }
 `);
 
 // let's define a root data, which is an object where data resolves
@@ -43,14 +54,23 @@ const rootData = {
   students: fakeData.students,
   failingStudents: fakeData.students.filter(student => student.score < 80),
   passingStudents: fakeData.students.filter(student => student.score >= 80),
+  // lets create a resolver to mutate student data
+  // graphql resolver will receive an input parameter from query variables
   createStudent: ({ input }) => {
+
+    // here, we mutate our fake data
     const newId = Math.max(...fakeData.students.map(student => student.id)) + 1;
     const newStudent = {
       id: newId,
       name: input.name,
+      age: input.age,
+      score: 0,
+    };
+    fakeData.students.push(newStudent);
 
-    }
-  }
+    // we might need to show the newly created student, so we return it
+    return newStudent;
+  },
 };
 
 // now we need the express app to use graphQLHTTP to serve graphql on '/graphql' route

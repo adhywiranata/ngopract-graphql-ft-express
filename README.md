@@ -14,3 +14,33 @@
 Ngopract release iteration consists of several branches (01-, 02-, etc) to ensure the best "ngopract" experience.
 
 - [01-Simple GraphQL Query](https://github.com/adhywiranata/ngopract-graphl-ft-express/tree/01-simple-graphql-query), simple getting started with query using an in-memory global variable fake database
+
+sample query
+```
+query {
+  students {
+    name
+    parentName
+  }
+}
+```
+
+- [02-Simple GraphQL Query and Mutation](https://github.com/adhywiranata/ngopract-graphl-ft-express/tree/01-simple-graphql-mutation), simple getting started with query and mutation
+
+sample mutation query
+```
+mutation CreateStudent($newStudent: NewStudentInput!) {
+  createStudent(input: $newStudent) {
+    name
+  }
+}
+```
+
+query variables for mutation
+```
+mutation CreateStudent($newStudent: NewStudent!) {
+  createStudent(input: $newStudent) {
+    name
+  }
+}
+```
