@@ -2,7 +2,15 @@ const app = require('express')();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const graphQLHTTP = require('express-graphql');
-const { buildSchema } = require('graphql');
+const {
+  GraphQLID,
+  GraphQLInt,
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLSchema,
+} = require('graphql');
 
 const fakeData = require('./fakeData');
 
@@ -10,74 +18,61 @@ const fakeData = require('./fakeData');
 app.use(cors());
 app.use(bodyParser.json());
 
-// let's build the app's schema using buildSchema()
-// ugh, no syntax highlighting for backticks? Bear with it for now!
-// this is the easiest way for us to build a simple GraphQL schema.
-
-// understanding GraphQL type system: http://graphql.org/learn/schema/#type-system
-const appSchema = buildSchema(`
-  type School {
-    name: String!
-    accreditation: String!
-  }
-
-  type Student {
-    id: ID!
-    name: String!
-    age: Int!
-    score: Int!
-    parentName: String
-  }
-
-  type Query {
-    school: School
-    students: [Student]
-    failingStudents: [Student]
-    passingStudents: [Student]
-  }
-
-  input NewStudentInput {
-    name: String!
-    age: Int!
-    score: Int!
-    parentName: String
-  }
-  
-  type Mutation {
-    createStudent(input: NewStudentInput): Student
-  }
-`);
-
-// let's define a root data, which is an object where data resolves
-const rootData = {
-  school: fakeData.school,
-  students: fakeData.students,
-  failingStudents: fakeData.students.filter(student => student.score < 80),
-  passingStudents: fakeData.students.filter(student => student.score >= 80),
-  // lets create a resolver to mutate student data
-  // graphql resolver will receive an input parameter from query variables
-  createStudent: ({ input }) => {
-
-    // here, we mutate our fake data
-    const newId = Math.max(...fakeData.students.map(student => student.id)) + 1;
-    const newStudent = {
-      id: newId,
-      name: input.name,
-      age: input.age,
-      score: 0,
-    };
-    fakeData.students.push(newStudent);
-
-    // we might need to show the newly created student, so we return it
-    return newStudent;
+// let's define the type for School using GraphQLObjectType
+// GraphQLObjectType usually consists of name and fields.
+const SchoolType = new GraphQLObjectType({
+  name: 'School',
+  fields: {
+    name: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    accreditation: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
   },
-};
+});
 
-// now we need the express app to use graphQLHTTP to serve graphql on '/graphql' route
-// of course, we can change the route to '/api' or any names
+// type for single Student
+const StudentType = new GraphQLObjectType({
+  name: 'Student',
+  fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+    },
+    name: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    age: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    score: {
+      type: GraphQLInt,
+    },
+  },
+});
+
+// now let's create an appQuery to contain all fields, school and students
+// each field resolves to a value from the fakeData
+const appQuery = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    school: {
+      type: SchoolType,
+      resolve: () => fakeData.school,
+    },
+    students: {
+      type: new GraphQLList(StudentType),
+      resolve: () => fakeData.students,
+    },
+  },
+});
+
+const appSchema = new GraphQLSchema({
+  query: appQuery,
+});
+
 app.use('/graphql', graphQLHTTP({
   schema: appSchema,
-  rootValue: rootData,
   graphiql: true,
 }));
 
