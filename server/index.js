@@ -26,6 +26,7 @@ const SchoolType = new GraphQLObjectType({
   fields: {
     name: {
       type: new GraphQLNonNull(GraphQLString),
+      resolve: (school) => school.name.toUpperCase(), 
     },
     accreditation: {
       type: new GraphQLNonNull(GraphQLString),
@@ -55,6 +56,13 @@ const StudentType = new GraphQLObjectType({
   },
 });
 
+// const fetchSchool = new Promise((resolve, reject) => {
+//   setTimeout(() => {
+//     resolve(fakeData.school);
+//   }, 2000);
+// });
+
+
 // now let's create an appQuery to contain all fields, school and students
 // each field resolves to a value from the fakeData
 const QueryType = new GraphQLObjectType({
@@ -62,11 +70,19 @@ const QueryType = new GraphQLObjectType({
   fields: {
     school: {
       type: SchoolType,
-      resolve: () => fakeData.school,
+      resolve: (root) => new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(fakeData.school);
+        }, 2000)
+      }),
     },
     students: {
       type: new GraphQLList(StudentType),
-      resolve: () => fakeData.students,
+      resolve: (root) => new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(fakeData.students);
+        }, 4000)
+      }),
     },
   },
 });
@@ -102,7 +118,7 @@ const MutationType = new GraphQLObjectType({
           type: StudentInputType,
         }
       },
-      resolve: (obj, args) => {
+      resolve: (root, args) => {
         const { input } = args;
         const newId = Math.max(...fakeData.students.map(student => student.id)) + 1;
         const newStudent = {

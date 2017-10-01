@@ -54,3 +54,5 @@ query variables for mutation
 - [03- GraphQL Query](https://github.com/adhywiranata/ngopract-graphl-ft-express/tree/03-graphql-query), the end result is the same as step 01, but built without using `buildSchema` method and use GraphQLObject instead.
 
 - [04- GraphQL Query and Mutation](https://github.com/adhywiranata/ngopract-graphl-ft-express/tree/04-graphql-mutation), the end result is the same as step 02, but built without using `buildSchema` method and use GraphQLObject instead.
+
+- [05- GraphQL Async Query](https://github.com/adhywiranata/ngopract-graphl-ft-express/tree/05-graphql-async-query), continuation on previous step, with asynchronous "data fetching" using simple setTimeout
