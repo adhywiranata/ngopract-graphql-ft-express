@@ -56,12 +56,6 @@ const StudentType = new GraphQLObjectType({
   },
 });
 
-// const fetchSchool = new Promise((resolve, reject) => {
-//   setTimeout(() => {
-//     resolve(fakeData.school);
-//   }, 2000);
-// });
-
 
 // now let's create an appQuery to contain all fields, school and students
 // each field resolves to a value from the fakeData
@@ -81,6 +75,20 @@ const QueryType = new GraphQLObjectType({
       resolve: (root) => new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve(fakeData.students);
+        }, 1000)
+      }),
+    },
+    student: {
+      type: StudentType,
+      args: {
+        id: {
+          name: 'id',
+          type: GraphQLInt,
+        }
+      },
+      resolve: (root, args) => new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(fakeData.students.filter(student => student.id === args.id)[0]);
         }, 1000)
       }),
     },
