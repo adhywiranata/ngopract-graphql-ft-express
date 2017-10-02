@@ -81,7 +81,7 @@ const QueryType = new GraphQLObjectType({
       resolve: (root) => new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve(fakeData.students);
-        }, 4000)
+        }, 1000)
       }),
     },
   },
